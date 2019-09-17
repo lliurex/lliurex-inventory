@@ -1,0 +1,16 @@
+Name=zero-lliurex-inventory
+Name[es]=Instalación de la herramienta para el inventario TIC del aula
+Name[en]=Installation of the tool for the ICT inventory of the classroom
+Name[ca_ES@valencia]=Instal·lació de l'eina per a l'inventari TIC de l'aula
+Name[ca_ES]=Instal·lació de l'eina per a l'inventari TIC de l'aula
+Comment=Installation assistant for the classroom ICT inventory tool
+Comment[es]=Asistente de instalación de la herramienta para el inventario TIC del aula
+Comment[ca_ES@valencia]=Assistent d'instal·lació de l'eina per a l'inventari TIC de l'aula
+Comment[ca_ES]=Assistent d'instal·lació de l'eina per a l'inventari TIC de l'aula
+Icon=zero-lliurex-inventory
+Groups=admin;admins;sudo
+Category=Software
+ScriptPath=zero-lliurex-inventory.zmd
+Using=pkexec
+Service=True
+Modal=True

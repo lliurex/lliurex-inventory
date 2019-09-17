@@ -1,0 +1,6 @@
+{
+	"type":"apt",
+	"pkg_list": [{"name":"","key_store":"zero-lliurex-inventory"}], 
+	"script": {"name":""},
+	"zomando":"zero-lliurex-inventory"
+}
