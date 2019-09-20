@@ -1,3 +1,9 @@
+zero-lliurex-inventory (0.2) bionic; urgency=medium
+
+  * Fixed control file
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 20 Sep 2019 14:17:06 +0200
+
 zero-lliurex-inventory (0.1) bionic; urgency=medium
 
   * Initial release
