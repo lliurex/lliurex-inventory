@@ -9,6 +9,6 @@ Package: zero-lliurex-inventory
 Architecture: any
 Section: x11
 Depends: zero-center,epi-gtk
-Description: GVA inventory tool installer
-  Zero-center helper, It downloads and installs gva tool for TIC inventory
+Description: Fusion Inventory tool installer
+  Zero-center helper, It downloads and installs Fusion Inventory for Gpt team
  
