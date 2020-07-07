@@ -1,3 +1,9 @@
+zero-lliurex-inventory (0.4) bionic; urgency=medium
+
+  * Added custom icon to show in epi
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 07 Jul 2020 11:02:44 +0200
+
 zero-lliurex-inventory (0.3) bionic; urgency=medium
 
   * Dummy upgrade
