@@ -1,6 +1,6 @@
 {
 	"type":"apt",
-	"pkg_list": [{"name":"fusioninstall","key_store":"zero-lliurex-inventory","custom_icon":"inventory.svg"}], 
+	"pkg_list": [{"name":"fusioninstall","key_store":"zero-lliurex-inventory","custom_name":"FusionInventory Agent","custom_icon":"inventory.svg"}], 
 	"script": {"name":"/usr/share/zero-lliurex-inventory/inventory_script","remove":true},
 	"custom_icon_path":"/usr/share/zero-lliurex-inventory/",
 	"zomando":"zero-lliurex-inventory"
