@@ -1,3 +1,9 @@
+zero-lliurex-inventory (0.5.1) focal; urgency=medium
+
+  * Initial release for focal
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 09 Feb 2021 10:50:44 +0100
+
 zero-lliurex-inventory (0.4.1) bionic-updates; urgency=medium
 
   * Added custom name
