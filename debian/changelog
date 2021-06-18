@@ -1,3 +1,9 @@
+zero-lliurex-inventory (0.4.2) bionic-updates; urgency=medium
+
+  * Fixed zero app file
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 18 Jun 2021 13:25:29 +0200
+
 zero-lliurex-inventory (0.4.1) bionic-updates; urgency=medium
 
   * Added custom name
