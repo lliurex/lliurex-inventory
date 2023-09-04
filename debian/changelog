@@ -1,0 +1,41 @@
+zero-lliurex-inventory (0.5.2) focal; urgency=medium
+
+  * Fixed zero app file
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 25 May 2021 17:23:30 +0200
+
+zero-lliurex-inventory (0.5.1) focal; urgency=medium
+
+  * Initial release for focal
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 09 Feb 2021 10:50:44 +0100
+
+zero-lliurex-inventory (0.4.1) bionic-updates; urgency=medium
+
+  * Added custom name
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 09 Feb 2021 10:44:36 +0100
+
+zero-lliurex-inventory (0.4) bionic; urgency=medium
+
+  * Added custom icon to show in epi
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 07 Jul 2020 11:02:44 +0200
+
+zero-lliurex-inventory (0.3) bionic; urgency=medium
+
+  * Dummy upgrade
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 02 Oct 2019 08:04:38 +0200
+
+zero-lliurex-inventory (0.2) bionic; urgency=medium
+
+  * Fixed control file
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 20 Sep 2019 14:17:06 +0200
+
+zero-lliurex-inventory (0.1) bionic; urgency=medium
+
+  * Initial release
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 20 Sep 2019 13:36:45 +0200
