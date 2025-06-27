@@ -11,4 +11,26 @@ Section: x11
 Depends: zero-center,epi-gtk
 Description: Fusion Inventory tool installer
   Zero-center helper, It downloads and installs Fusion Inventory for Gpt team
+
+Package: lliurex-inventory-agent
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, glpi-agent
+Conflicts: fusioninstall (<< 1.0), fusioninventory-agent, fusioninventory-agent-task-network, fusioninventory-agent-task-deploy, fusioninventory-agent-task-esx
+Description:  LliureX hardware and software inventory client
+ The package installs required dependencies and configurations for the operation
+ of GLPI agent within the GVA network of educational centres.
+ .
+ LliureX inventory management facilitates the support and maintenance of
+ the educational centres' equipment.
+
+Package: fusioninstall
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, lliurex-inventory-agent (= ${binary:Version})
+Description: LliureX inventory agent dummy transitional package
+ Force uninstallation of (old) fusioninventory-agent packages and installs
+ new lliurex-inventory-agent package.
+ This package can safely be removed after installation.
+ .
+ LliureX inventory management facilitates the support and maintenance of
+ the educational centres' equipment.
  
