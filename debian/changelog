@@ -1,3 +1,9 @@
+lliurex-inventory (0.5.3) focal; urgency=medium
+
+  * Source renamed to lliurex-inventory.
+
+ -- Marta Sánchez Gázquez <martisa@gmail.com>  Thu, 26 Jun 2025 18:18:29 +0200
+
 zero-lliurex-inventory (0.5.2) focal; urgency=medium
 
   * Fixed zero app file
