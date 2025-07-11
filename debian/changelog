@@ -1,3 +1,11 @@
+lliurex-inventory (1.0.1) jammy; urgency=medium
+
+  * Added configuration file for GLPI Agent 
+  * Debian versioning changed to force bypass of ancient fusioninventory package
+    (1.0~llx19)
+
+ -- Marta Sánchez Gázquez <martisa@gmail.com>  Fri, 11 Jul 2025 12:12:51 +0200
+
 lliurex-inventory (0.15.3) jammy; urgency=medium
 
   * Source renamed to lliurex-inventory.
