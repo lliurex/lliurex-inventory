@@ -1,14 +1,29 @@
 #!/bin/bash
 
-
 ACTION="$1"
 
+shift
+PACKAGE_LIST=$@
+
 case $ACTION in
+
 	remove)
-		apt-get remove -y fusioninstall
-		TEST=$( dpkg-query -s fusioninstall 2> /dev/null| grep Status | cut -d " " -f 4 )
-		if [ "$TEST" == 'installed' ];then
+		count=0
+		for ix in $PACKAGE_LIST
+		do
+			apt-get remove -y $ix
+
+			TEST=$(dpkg-query -s $ix 2> /dev/null | grep Status | cut -d " " -f 4)
+
+			if [ "$TEST" == 'installed' ];then
+				count+=1
+			fi
+		done
+
+		if [ $count -gt 0 ];then
 			exit 1
-		fi	
-	;;	
-esac	
+		fi
+	;;
+
+esac
+exit 0	
