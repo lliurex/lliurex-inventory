@@ -31,7 +31,7 @@ die(){
 }
 
 usage(){
-	die "Usage" "$0 {configure|unconfigure|status|start|stop|restart}"
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop|restart}"
 }
 
 config_install(){
