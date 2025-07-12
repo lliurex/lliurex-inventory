@@ -1,0 +1,106 @@
+#!/bin/sh
+
+#  Description:
+#
+# Simple tool to manage invoentory agent in LliureX
+#
+
+###############
+# global vars #
+###############
+
+PACKAGE_NAME="lliurex-inventory-agent"
+ORIGINAL_FILE="/etc/glpi-agent/agent.cfg"
+LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
+DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
+
+die(){
+        TYPE="ERROR"
+        if [ "$#" -gt 1 ] ; then
+                TYPE="$1"
+                shift
+        fi
+        printf "${TYPE}: " >&2
+        while [ "$1" ] ; do
+                echo "$1" >&2
+                shift
+        done
+        echo "" >&2
+
+        exit 1
+}
+
+usage(){
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop|restart}"
+}
+
+config_install(){
+	# divert original glpi-agent configuration
+	# abort if original file is already deiverted
+	if [ ! -r "$DIVERTED_FILE" ] ; then
+		dpkg-divert --package $PACKAGE_NAME --rename --quiet --add --divert  $DIVERTED_FILE  $ORIGINAL_FILE
+	fi
+
+	# link lliurex file to replace original file
+	# abort if original file is already linked
+	if [ ! -L $ORIGINAL_FILE ] ; then
+		# test to avoid deletion of lliurex file
+		if [ "$(readlink -f "$ORIGINAL_FILE")" != "${LLIUREX_FILE}"  ] ; then
+			rm -rf "$ORIGINAL_FILE" || true
+			ln -fs "$LLIUREX_FILE" "$ORIGINAL_FILE"
+		fi
+	fi
+}
+
+config_remove(){
+	# check if actual file is a symbolic link and remove it
+	if [ -L "$ORIGINAL_FILE" ] ; then
+		rm $ORIGINAL_FILE
+	fi
+
+	# check existence of diverted file and remove diversion
+	if [ -e "$DIVERTED_FILE" ] ; then
+		dpkg-divert --package "$PACKAGE_NAME" --rename --quiet --remove "$ORIGINAL_FILE"
+	fi
+}
+
+service_mgr(){
+	# TODO: manage real service
+	return 0
+}
+
+service_restart(){
+	if [ "$1" = "force" ] || [ "$(service_mgr status)" = "running" ] ; then
+	       service_mgr restart
+	fi	       
+	return 0
+}
+
+main(){
+	case "$1" in
+		configure)
+			config_install
+			service_restart
+	;;
+
+		unconfigure)
+			config_remove
+			service_restart
+	;;
+
+		stop|start|status)
+			service_mgr "$1"
+	;;
+		*)
+			usage
+	;;
+	esac
+	return 0
+}
+
+################
+# main program #
+################
+main "$@"
+exit 0
+
