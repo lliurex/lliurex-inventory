@@ -2,7 +2,7 @@
 
 #  Description:
 #
-# Simple tool to manage invoentory agent in LliureX
+# Simple tool to manage inventory agent in LliureX
 #
 
 ###############
@@ -13,6 +13,7 @@ PACKAGE_NAME="lliurex-inventory-agent"
 ORIGINAL_FILE="/etc/glpi-agent/agent.cfg"
 LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
 DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
+SERVICE_NAME="glpi-agent"
 
 die(){
         TYPE="ERROR"
@@ -31,18 +32,19 @@ die(){
 }
 
 usage(){
-	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop|restart}"
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop}" \
+	"       $(basename "$0") [ --force ] restart"
 }
 
 config_install(){
 	# divert original glpi-agent configuration
-	# abort if original file is already deiverted
+	# (if original file is not already diverted)
 	if [ ! -r "$DIVERTED_FILE" ] ; then
 		dpkg-divert --package $PACKAGE_NAME --rename --quiet --add --divert  $DIVERTED_FILE  $ORIGINAL_FILE
 	fi
 
 	# link lliurex file to replace original file
-	# abort if original file is already linked
+	# (if original file is not already linked)
 	if [ ! -L $ORIGINAL_FILE ] ; then
 		# test to avoid deletion of lliurex file
 		if [ "$(readlink -f "$ORIGINAL_FILE")" != "${LLIUREX_FILE}"  ] ; then
@@ -65,35 +67,67 @@ config_remove(){
 }
 
 service_mgr(){
-	# TODO: manage real service
+	case "$1" in
+		is_active)
+			rc=0
+			systemctl is-active --quiet $SERVICE_NAME || rc=$?
+			return $rc
+		;;
+		start|stop)
+			systemctl $1 $SERVICE_NAME || true
+		;;
+	esac
 	return 0
 }
 
 service_restart(){
-	if [ "$1" = "force" ] || [ "$(service_mgr status)" = "running" ] ; then
-	       service_mgr restart
+	if [ "$1" = "--force" ] || [ "$(service_mgr status)" = "running" ] ; then
+		service_mgr stop
+		service_mgr start
 	fi	       
 	return 0
 }
 
 main(){
+	[ "$1" ] || usage
+	RESTART_OPTIONS=""
+	if [ "$1" = "--force" ] ; then
+		RESTART_OPTIONS="$1"
+		shift
+	fi
+
 	case "$1" in
 		configure)
 			config_install
-			service_restart
-	;;
+			service_restart --force
+		;;
 
 		unconfigure)
 			config_remove
-			service_restart
-	;;
+			service_restart --force
+		;;
 
-		stop|start|status)
+		stop|start)
 			service_mgr "$1"
-	;;
+		;;
+
+		restart)
+			service_restart $RESTART_OPTIONS
+		;;
+
+		status)
+			rc=0
+			service_mgr is_active || rc=$?
+			if [ $rc -ne 0 ] ; then
+				echo "not running"
+				return $rc
+			fi
+			echo "running"
+		;;
+
 		*)
 			usage
-	;;
+		;;
 	esac
 	return 0
 }
