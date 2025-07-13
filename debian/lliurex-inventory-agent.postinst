@@ -22,7 +22,7 @@ case "$1" in
 	# divert original glpi-agent configuration
 	# link lliurex file to replace original file
 	# restart service if it is running
-	lliurex-inventory-cli configure
+	lliurex-inventory configure
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

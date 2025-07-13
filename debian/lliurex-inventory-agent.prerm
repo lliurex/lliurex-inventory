@@ -21,7 +21,7 @@ case $1 in
 		# check if actual file is a symbolic link and remove it
 		# check existence of diverted file and remove diversion
         	# restart service if it is running
-		lliurex-inventory-cli unconfigure
+		lliurex-inventory unconfigure
 
 		;;
 
