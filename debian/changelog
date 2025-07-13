@@ -1,3 +1,11 @@
+lliurex-inventory (1.0.2) jammy; urgency=medium
+
+  * Divert /etc/glpi-agent/agent.cfg file to force required LliureX
+    configuration
+  * Added lliurex-inventory cli tool to manage service
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Sun, 13 Jul 2025 20:59:01 +0200
+
 lliurex-inventory (1.0.1) jammy; urgency=medium
 
   * Added configuration file for GLPI Agent 
