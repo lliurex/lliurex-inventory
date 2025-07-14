@@ -1,3 +1,9 @@
+lliurex-inventory (1.0.4) jammy; urgency=medium
+
+  * Changed epi script to remove fusioninstall after installation of lliurex-inventory-agent
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 14 Jul 2025 12:53:18 +0200
+
 lliurex-inventory (1.0.3) jammy; urgency=medium
 
   * Install configuration as '/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg'
