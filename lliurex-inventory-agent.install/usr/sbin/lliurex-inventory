@@ -10,9 +10,10 @@
 ###############
 
 PACKAGE_NAME="lliurex-inventory-agent"
-ORIGINAL_FILE="/etc/glpi-agent/agent.cfg"
-LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
 DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
+#ORIGINAL_FILE="/etc/glpi-agent/agent.cfg"
+ORIGINAL_FILE="/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg"
+LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
 SERVICE_NAME="glpi-agent"
 
 die(){
@@ -37,11 +38,12 @@ usage(){
 }
 
 config_install(){
-	# divert original glpi-agent configuration
-	# (if original file is not already diverted)
-	if [ ! -r "$DIVERTED_FILE" ] ; then
-		dpkg-divert --package $PACKAGE_NAME --rename --quiet --add --divert  $DIVERTED_FILE  $ORIGINAL_FILE
-	fi
+	# diversion is not needed as we now use conf.d directory
+	## divert original glpi-agent configuration
+	## (if original file is not already diverted)
+	#if [ ! -r "$DIVERTED_FILE" ] ; then
+	#	dpkg-divert --package $PACKAGE_NAME --rename --quiet --add --divert  $DIVERTED_FILE  $ORIGINAL_FILE
+	#fi
 
 	# link lliurex file to replace original file
 	# (if original file is not already linked)
@@ -55,15 +57,17 @@ config_install(){
 }
 
 config_remove(){
+	# diversion is not needed as we now use conf.d directory
 	# check if actual file is a symbolic link and remove it
 	if [ -L "$ORIGINAL_FILE" ] ; then
 		rm $ORIGINAL_FILE
 	fi
 
-	# check existence of diverted file and remove diversion
-	if [ -e "$DIVERTED_FILE" ] ; then
-		dpkg-divert --package "$PACKAGE_NAME" --rename --quiet --remove "$ORIGINAL_FILE"
-	fi
+	# diversion is not needed as we now use conf.d directory
+	## check existence of diverted file and remove diversion
+	#if [ -e "$DIVERTED_FILE" ] ; then
+	#	dpkg-divert --package "$PACKAGE_NAME" --rename --quiet --remove "$ORIGINAL_FILE"
+	#fi
 }
 
 service_mgr(){
