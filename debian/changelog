@@ -1,3 +1,10 @@
+lliurex-inventory (1.0.3) jammy; urgency=medium
+
+  * Install configuration as '/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg'
+    and avoid diversion
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Mon, 14 Jul 2025 10:06:21 +0200
+
 lliurex-inventory (1.0.2) jammy; urgency=medium
 
   * Divert /etc/glpi-agent/agent.cfg file to force required LliureX
