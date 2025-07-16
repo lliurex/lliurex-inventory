@@ -15,6 +15,7 @@ DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
 ORIGINAL_FILE="/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg"
 LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
 SERVICE_NAME="glpi-agent"
+AGENT_CND="glpi-agent"
 
 die(){
         TYPE="ERROR"
@@ -33,7 +34,7 @@ die(){
 }
 
 usage(){
-	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop}" \
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stopi|run}" \
 	"       $(basename "$0") [ --force ] restart"
 }
 
@@ -113,6 +114,9 @@ main(){
 
 		stop|start)
 			service_mgr "$1"
+		;;
+		run)
+			$AGENT_CMD || true
 		;;
 
 		restart)
