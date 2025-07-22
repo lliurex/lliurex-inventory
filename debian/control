@@ -14,7 +14,7 @@ Description: Fusion Inventory tool installer
 
 Package: lliurex-inventory-agent
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, glpi-agent
+Depends: ${shlibs:Depends}, ${misc:Depends}, glpi-agent (>=1.15-1)
 Conflicts: fusioninstall (<< 1.0), fusioninventory-agent, fusioninventory-agent-task-network, fusioninventory-agent-task-deploy, fusioninventory-agent-task-esx
 Description:  LliureX hardware and software inventory client
  The package installs required dependencies and configurations for the operation
