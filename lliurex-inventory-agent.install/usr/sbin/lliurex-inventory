@@ -116,6 +116,7 @@ agent_log(){
 
 
 agent_run(){
+	default_gw_available || return 1
 	rc=0
 	$AGENT_CMD || rc=$?
 	[ $rc -ne 0 ] || agent_log
@@ -136,6 +137,12 @@ agent_firstrun(){
 			agent_firstrun_unlink
 		fi
 	fi
+}
+
+default_gw_available(){
+	GW_IP="$(LANG=C ip -4 route list 0/0 |head -1 |cut -d ' ' -f 3)"
+	[ "$GW_IP" ] || returrn 1
+	return 0
 }
 
 
