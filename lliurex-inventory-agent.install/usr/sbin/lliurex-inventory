@@ -15,7 +15,13 @@ DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
 ORIGINAL_FILE="/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg"
 LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
 SERVICE_NAME="glpi-agent"
-AGENT_CND="glpi-agent"
+AGENT_CMD="glpi-agent"
+FIRST_RUN_DIR="/var/lib/lliurex-inventory-agent"
+GLPI_AGENT_VERSION="$(LANG=C dpkg -s glpi-agent 2>/dev/null |sed -ne "/^Version:/{s%^Version:\s*%%;p}")"
+FIRST_RUN_LOG="$FIRST_RUN_DIR/first-run.log"
+FIRST_RUN_NAME="90-lliurex-inventory-firstrun"
+FIRST_RUN_SH="/usr/share/lliurex-inventory-agent/$FIRST_RUN_NAME"
+FIRST_RUN_LINK="/etc/NetworkManager/dispatcher.d/$FIRST_RUN_NAME"
 
 die(){
         TYPE="ERROR"
@@ -34,7 +40,7 @@ die(){
 }
 
 usage(){
-	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stopi|run}" \
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop|run|firstrun}" \
 	"       $(basename "$0") [ --force ] restart"
 }
 
@@ -93,6 +99,53 @@ service_restart(){
 	return 0
 }
 
+agent_log_test(){
+	if [ -r "$FIRST_RUN_LOG" ] ; then
+		if cut -f 1 -d " " "$FIRST_RUN_LOG" |grep -qFx "$GLPI_AGENT_VERSION" ; then
+			return 0
+		fi
+	fi
+	return 1
+}
+
+agent_log(){
+	if ! agent_log_test ; then
+		echo "$GLPI_AGENT_VERSION $(date -R)" >> "$FIRST_RUN_LOG"
+	fi
+}
+
+
+agent_run(){
+	default_gw_available || return 1
+	rc=0
+	$AGENT_CMD || rc=$?
+	[ $rc -ne 0 ] || agent_log
+	return $rc
+}
+
+agent_firstrun_link(){
+	ln -sf "$FIRST_RUN_SH" "$FIRST_RUN_LINK"
+}
+
+agent_firstrun_unlink(){
+	rm -f "$FIRST_RUN_LINK"
+}
+
+agent_firstrun(){
+	if ! agent_log_test ; then
+		if agent_run ; then
+			agent_firstrun_unlink
+		fi
+	fi
+}
+
+default_gw_available(){
+	GW_IP="$(LANG=C ip -4 route list 0/0 |head -1 |cut -d ' ' -f 3)"
+	[ "$GW_IP" ] || returrn 1
+	return 0
+}
+
+
 main(){
 	[ "$1" ] || usage
 	RESTART_OPTIONS=""
@@ -104,19 +157,27 @@ main(){
 	case "$1" in
 		configure)
 			config_install
+			agent_firstrun_link
 			service_restart --force
 		;;
 
 		unconfigure)
 			config_remove
+			agent_firstrun_unlink
+			rm -f "$FIRST_RUN_LOG"
 			service_restart --force
 		;;
 
 		stop|start)
 			service_mgr "$1"
 		;;
+
 		run)
-			$AGENT_CMD || true
+			agent_run || true
+		;;
+
+		firstrun)
+			agent_firstrun || true
 		;;
 
 		restart)
