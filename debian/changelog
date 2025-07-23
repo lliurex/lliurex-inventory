@@ -1,3 +1,10 @@
+lliurex-inventory (1.0.5) jammy; urgency=medium
+
+  * New options 'run' and 'firstrun' in lliurex-inventory script
+  * Added NetworkManager-dispatcher script to execute firstrun
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Wed, 23 Jul 2025 12:11:35 +0200
+
 lliurex-inventory (1.0.4) jammy; urgency=medium
 
   * Changed epi script to remove fusioninstall after installation of lliurex-inventory-agent
