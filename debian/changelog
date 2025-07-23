@@ -1,3 +1,9 @@
+lliurex-inventory (1.0.6) jammy; urgency=medium
+
+  *  Dummy upgrade
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Wed, 23 Jul 2025 21:23:45 +0200
+
 lliurex-inventory (1.0.5) jammy; urgency=medium
 
   * New options 'run' and 'firstrun' in lliurex-inventory script
