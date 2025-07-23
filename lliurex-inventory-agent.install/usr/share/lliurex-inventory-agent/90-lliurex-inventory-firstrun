@@ -1,0 +1,13 @@
+#!/bin/sh
+
+INTERFACE=$1
+ACTION=$2
+
+case "$ACTION" in
+	dhcp4-change|dhcp6-change)
+		exec lliurex-inventory firstrun
+		;;
+	*)
+		;;
+esac
+

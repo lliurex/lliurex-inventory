@@ -1,0 +1,209 @@
+#!/bin/sh
+
+#  Description:
+#
+# Simple tool to manage inventory agent in LliureX
+#
+
+###############
+# global vars #
+###############
+
+PACKAGE_NAME="lliurex-inventory-agent"
+DIVERTED_FILE="/etc/glpi-agent/agent.cfg.diverted"
+#ORIGINAL_FILE="/etc/glpi-agent/agent.cfg"
+ORIGINAL_FILE="/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg"
+LLIUREX_FILE="/usr/share/lliurex-inventory-agent/agent.cfg"
+SERVICE_NAME="glpi-agent"
+AGENT_CMD="glpi-agent"
+FIRST_RUN_DIR="/var/lib/lliurex-inventory-agent"
+GLPI_AGENT_VERSION="$(LANG=C dpkg -s glpi-agent 2>/dev/null |sed -ne "/^Version:/{s%^Version:\s*%%;p}")"
+FIRST_RUN_LOG="$FIRST_RUN_DIR/first-run.log"
+FIRST_RUN_NAME="90-lliurex-inventory-firstrun"
+FIRST_RUN_SH="/usr/share/lliurex-inventory-agent/$FIRST_RUN_NAME"
+FIRST_RUN_LINK="/etc/NetworkManager/dispatcher.d/$FIRST_RUN_NAME"
+
+die(){
+        TYPE="ERROR"
+        if [ "$#" -gt 1 ] ; then
+                TYPE="$1"
+                shift
+        fi
+        printf "${TYPE}: " >&2
+        while [ "$1" ] ; do
+                echo "$1" >&2
+                shift
+        done
+        echo "" >&2
+
+        exit 1
+}
+
+usage(){
+	die "Usage" "$(basename "$0") {configure|unconfigure|status|start|stop|run|firstrun}" \
+	"       $(basename "$0") [ --force ] restart"
+}
+
+config_install(){
+	# diversion is not needed as we now use conf.d directory
+	## divert original glpi-agent configuration
+	## (if original file is not already diverted)
+	#if [ ! -r "$DIVERTED_FILE" ] ; then
+	#	dpkg-divert --package $PACKAGE_NAME --rename --quiet --add --divert  $DIVERTED_FILE  $ORIGINAL_FILE
+	#fi
+
+	# link lliurex file to replace original file
+	# (if original file is not already linked)
+	if [ ! -L $ORIGINAL_FILE ] ; then
+		# test to avoid deletion of lliurex file
+		if [ "$(readlink -f "$ORIGINAL_FILE")" != "${LLIUREX_FILE}"  ] ; then
+			rm -rf "$ORIGINAL_FILE" || true
+			ln -fs "$LLIUREX_FILE" "$ORIGINAL_FILE"
+		fi
+	fi
+}
+
+config_remove(){
+	# diversion is not needed as we now use conf.d directory
+	# check if actual file is a symbolic link and remove it
+	if [ -L "$ORIGINAL_FILE" ] ; then
+		rm $ORIGINAL_FILE
+	fi
+
+	# diversion is not needed as we now use conf.d directory
+	## check existence of diverted file and remove diversion
+	#if [ -e "$DIVERTED_FILE" ] ; then
+	#	dpkg-divert --package "$PACKAGE_NAME" --rename --quiet --remove "$ORIGINAL_FILE"
+	#fi
+}
+
+service_mgr(){
+	case "$1" in
+		is_active)
+			rc=0
+			systemctl is-active --quiet $SERVICE_NAME || rc=$?
+			return $rc
+		;;
+		start|stop)
+			systemctl $1 $SERVICE_NAME || true
+		;;
+	esac
+	return 0
+}
+
+service_restart(){
+	if [ "$1" = "--force" ] || [ "$(service_mgr status)" = "running" ] ; then
+		service_mgr stop
+		service_mgr start
+	fi	       
+	return 0
+}
+
+agent_log_test(){
+	if [ -r "$FIRST_RUN_LOG" ] ; then
+		if cut -f 1 -d " " "$FIRST_RUN_LOG" |grep -qFx "$GLPI_AGENT_VERSION" ; then
+			return 0
+		fi
+	fi
+	return 1
+}
+
+agent_log(){
+	if ! agent_log_test ; then
+		echo "$GLPI_AGENT_VERSION $(date -R)" >> "$FIRST_RUN_LOG"
+	fi
+}
+
+
+agent_run(){
+	default_gw_available || return 1
+	rc=0
+	$AGENT_CMD || rc=$?
+	[ $rc -ne 0 ] || agent_log
+	return $rc
+}
+
+agent_firstrun_link(){
+	ln -sf "$FIRST_RUN_SH" "$FIRST_RUN_LINK"
+}
+
+agent_firstrun_unlink(){
+	rm -f "$FIRST_RUN_LINK"
+}
+
+agent_firstrun(){
+	if ! agent_log_test ; then
+		if agent_run ; then
+			agent_firstrun_unlink
+		fi
+	fi
+}
+
+default_gw_available(){
+	GW_IP="$(LANG=C ip -4 route list 0/0 |head -1 |cut -d ' ' -f 3)"
+	[ "$GW_IP" ] || returrn 1
+	return 0
+}
+
+
+main(){
+	[ "$1" ] || usage
+	RESTART_OPTIONS=""
+	if [ "$1" = "--force" ] ; then
+		RESTART_OPTIONS="$1"
+		shift
+	fi
+
+	case "$1" in
+		configure)
+			config_install
+			agent_firstrun_link
+			service_restart --force
+		;;
+
+		unconfigure)
+			config_remove
+			agent_firstrun_unlink
+			rm -f "$FIRST_RUN_LOG"
+			service_restart --force
+		;;
+
+		stop|start)
+			service_mgr "$1"
+		;;
+
+		run)
+			agent_run || true
+		;;
+
+		firstrun)
+			agent_firstrun || true
+		;;
+
+		restart)
+			service_restart $RESTART_OPTIONS
+		;;
+
+		status)
+			rc=0
+			service_mgr is_active || rc=$?
+			if [ $rc -ne 0 ] ; then
+				echo "not running"
+				return $rc
+			fi
+			echo "running"
+		;;
+
+		*)
+			usage
+		;;
+	esac
+	return 0
+}
+
+################
+# main program #
+################
+main "$@"
+exit 0
+
