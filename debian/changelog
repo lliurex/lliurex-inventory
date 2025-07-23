@@ -1,8 +1,50 @@
-lliurex-inventory (0.5.3) focal; urgency=medium
+lliurex-inventory (1.0.5) focal; urgency=medium
+
+  * New options 'run' and 'firstrun' in lliurex-inventory script
+  * Added NetworkManager-dispatcher script to execute firstrun
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Wed, 23 Jul 2025 12:11:35 +0200
+
+lliurex-inventory (1.0.4) jammy; urgency=medium
+
+  * Changed epi script to remove fusioninstall after installation of lliurex-inventory-agent
+  
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 14 Jul 2025 12:53:18 +0200
+
+lliurex-inventory (1.0.3) jammy; urgency=medium
+
+  * Install configuration as '/etc/glpi-agent/conf.d/50-lliurex-inventory.cfg'
+    and avoid diversion
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Mon, 14 Jul 2025 10:06:21 +0200
+
+lliurex-inventory (1.0.2) jammy; urgency=medium
+
+  * Divert /etc/glpi-agent/agent.cfg file to force required LliureX
+    configuration
+  * Added lliurex-inventory cli tool to manage service
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Sun, 13 Jul 2025 20:59:01 +0200
+
+lliurex-inventory (1.0.1) jammy; urgency=medium
+
+  * Added configuration file for GLPI Agent 
+  * Debian versioning changed to force bypass of ancient fusioninventory package
+    (1.0~llx19)
+
+ -- Marta Sánchez Gázquez <martisa@gmail.com>  Fri, 11 Jul 2025 12:12:51 +0200
+
+lliurex-inventory (0.15.3) jammy; urgency=medium
 
   * Source renamed to lliurex-inventory.
 
- -- Marta Sánchez Gázquez <martisa@gmail.com>  Thu, 26 Jun 2025 18:18:29 +0200
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Thu, 26 Jun 2025 13:51:22 +0200
+
+zero-lliurex-inventory (0.15.2) jammy; urgency=medium
+
+  * Initial release for Jammy
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 04 Sep 2023 09:52:25 +0200
 
 zero-lliurex-inventory (0.5.2) focal; urgency=medium
 
