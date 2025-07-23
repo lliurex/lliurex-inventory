@@ -1,3 +1,9 @@
+lliurex-inventory (1.0.7) noble; urgency=medium
+
+  * Initial release for noble
+
+ -- Luis Garcia Gisbert <luisgg@gmail.com>  Wed, 23 Jul 2025 21:26:48 +0200
+
 lliurex-inventory (1.0.6) jammy; urgency=medium
 
   *  Dummy upgrade
