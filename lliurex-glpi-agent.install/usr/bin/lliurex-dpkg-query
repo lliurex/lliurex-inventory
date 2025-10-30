@@ -1,0 +1,106 @@
+#!/bin/sh
+
+#  Description:
+#
+# Wrapper to dpkg-query to get a custom report of installed packages
+# in a GLPI compatible format (SOFTWARES CATEGORY).
+# the script uses a white list of package-name patterns to
+# limit output to relevant packages.
+#
+# lliurex-auto-upgrade tags can also reported as installed packages,
+# using prefix 'llxtag_' for the package name, 'llxtag' as section and
+# lliurex cdd number version as version
+#
+# This is a drop-in replacement for 'dpkg-query' in glpi-agent
+
+#############
+# functions #
+#############
+die(){
+        TYPE="ERROR"
+        if [ "$#" -gt 1 ] ; then
+                TYPE="$1"
+                shift
+        fi
+        printf "${TYPE}: " >&2
+        while [ "$1" ] ; do
+                echo "$1" >&2
+                shift
+        done
+        echo "" >&2
+
+        exit 1
+}
+
+usage(){
+        die "Usage" "$(basename "$0") COMMAND [[+]PACKAGE_PATTERN_LIST...]"  \
+            "       OPTIONS:" \
+	    "                 [--]pkgs (show packages)" \
+	    "                 [--]tags (show auto-upgrade tags)" \
+            "                 [--]list (show packages and auto-upgrade tags)"
+}
+
+dpkg_query_show(){
+	LANG=C echo "$PATTERN_LIST" |xargs dpkg-query --showformat='${Package}\t${Architecture}\t${Version}\t${Installed-Size}\t${Section}\t${Status}\n' --show
+}
+
+# main
+
+[ "$1" ] || usage
+
+ACTION="$(echo "$1" |sed -e "s%^--%%")"
+shift
+
+SHOW_PKGS=""
+SHOW_TAGS=""
+SHOW_ALL=""
+
+case "$ACTION" in
+	pkgs)
+		SHOW_PKGS="Y"
+		;;
+	tags)
+		SHOW_TAGS="Y"
+		;;
+	list)
+		SHOW_ALL="Y"
+		;;
+	*)
+		usage
+		;;
+esac
+
+# DEFAULT PACKAGE_PATTERNS
+DEF_PATTERNS='lliurex-meta-* lliurex-auto-upgrade'
+OK_INSTALLED="install ok installed"
+
+PATTERN_LIST=""
+while [ "$1" ] ; do
+	if echo "$1" |grep -q "^+" ; then
+		echo " $PATTERN_LIST " |grep -qF " + " || PATTERN_LIST="$PATTERN_LIST +"
+	fi
+	PAT="$(echo "$1" |sed -e "s%^+%%")"
+	PATTERN_LIST="$PATTERN_LIST $PAT"
+	shift
+done
+
+[ "$PATTERN_LIST" ] || PATTERN_LIST="+"
+PATTERN_LIST="$(echo "$PATTERN_LIST" |sed -e "s%+%$DEF_PATTERNS%")"
+
+if [ "$SHOW_PKGS" ] || [ "$SHOW_ALL" ] ; then
+	dpkg_query_show
+fi
+
+if [ "$SHOW_TAGS" ] || [ "$SHOW_ALL" ] ; then
+	# report lliurex auto upgrade tags
+	TAGS_DIR=/etc/lliurex-auto-upgrade/tags
+	VERSION_NUMBER="$(lliurex-version -n)"
+	TAG_PREFIX="llxtag_"
+	TAG_SECTION="llxtag"
+	#TAG_ARCH="$(dpkg --print-architecture)"
+	TAG_ARCH="all"
+	TAG_SIZE=1
+
+	ls -1 $TAGS_DIR | sed -e "s%^%$TAG_PREFIX%;s%$%\t$TAG_ARCH\t$VERSION_NUMBER\t$TAG_SIZE\t$TAG_SECTION\t$OK_INSTALLED%"
+fi
+

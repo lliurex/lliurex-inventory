@@ -1,0 +1,3 @@
+#!/bin/sh
+lliurex-dpkg-query --tags
+
